@@ -10,4 +10,10 @@ package com.ains.chat.utill;
  */
 public class AppConstant {
 
+	public static final String ACTIVE = "active";
+	public static final String DEACTIVE = "deactive";
+	
+	public static final String PUBLIC_CHAT = "public";
+	public static final String PRIVATE_CHAT = "private";
+	public static final String GROUP_CHAT = "group";
 }
