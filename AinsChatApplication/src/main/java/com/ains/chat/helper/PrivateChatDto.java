@@ -11,16 +11,18 @@ import java.util.Date;
 /**
  * @author Tharaka Chandralal
  */
-public class privateChatDto {
+public class PrivateChatDto {
 
 	private String privateChatId;
 	private Date date;
 	private String time;
 	private ChatDto chatDto;
-	private String status;
+	private String senderName;
+	private String resiverName;
+	private String userOne;
+	private String userTwo;
 	
-	
-	public privateChatDto() {
+	public PrivateChatDto() {
 	
 	}
 	
@@ -48,11 +50,38 @@ public class privateChatDto {
 	public void setChatDto(ChatDto chatDto) {
 		this.chatDto = chatDto;
 	}
-	public String getStatus() {
-		return status;
+
+
+	public String getSenderName() {
+		return senderName;
 	}
-	public void setStatus(String status) {
-		this.status = status;
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
+
+	public String getResiverName() {
+		return resiverName;
+	}
+
+	public void setResiverName(String resiverName) {
+		this.resiverName = resiverName;
+	}
+
+	public String getUserOne() {
+		return userOne;
+	}
+
+	public void setUserOne(String userOne) {
+		this.userOne = userOne;
+	}
+
+	public String getUserTwo() {
+		return userTwo;
+	}
+
+	public void setUserTwo(String userTwo) {
+		this.userTwo = userTwo;
 	}
 	
 	

@@ -12,7 +12,6 @@ public class GroupChatDetailsDto {
 
 	private String groupDetailsId;
 	private String usersNames;
-	private String status;
 	private ChatDto chatDto;
 	private GroupChatDto groupChatDto;
 	
@@ -36,13 +35,6 @@ public class GroupChatDetailsDto {
 		this.usersNames = usersNames;
 	}
 
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
 
 	public ChatDto getChatDto() {
 		return chatDto;

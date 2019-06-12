@@ -25,7 +25,11 @@ public class PrivateChat {
 	private String privateChatId;
 	private Date date;
 	private String time;
+	private String senderName;
+	private String resiverName;
 	private Chat chat;
+	private String userOne;
+	private String userTwo;
 	private String status;
 	
 	public PrivateChat() {
@@ -78,6 +82,42 @@ public class PrivateChat {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	@Column(name="SNAME",length=255,nullable=false)
+	public String getSenderName() {
+		return senderName;
+	}
+
+	public void setSenderName(String senderName) {
+		this.senderName = senderName;
+	}
+
+	@Column(name="RNMAE",length=255,nullable=false)
+	public String getResiverName() {
+		return resiverName;
+	}
+
+	public void setResiverName(String resiverName) {
+		this.resiverName = resiverName;
+	}
+
+	@Column(name="UONE",length=255,nullable=false)
+	public String getUserOne() {
+		return userOne;
+	}
+
+	public void setUserOne(String userOne) {
+		this.userOne = userOne;
+	}
+
+	@Column(name="UTWO",length=255,nullable=false)
+	public String getUserTwo() {
+		return userTwo;
+	}
+
+	public void setUserTwo(String userTwo) {
+		this.userTwo = userTwo;
 	}
 	
 	

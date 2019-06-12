@@ -30,7 +30,7 @@ public class GroupChat {
 	private String deleteBy;
 	private Date deleteDate;
 	private String deleteTime;
-	
+	private List<Members>members;
 	private List<GroupChatDeatails>groupChatDeatails;
 	
 	public GroupChat() {
@@ -126,6 +126,15 @@ public class GroupChat {
 
 	public void setDeleteDate(Date deleteDate) {
 		this.deleteDate = deleteDate;
+	}
+
+	@OneToMany(mappedBy="groupChat",targetEntity=Members.class)
+	public List<Members> getMembers() {
+		return members;
+	}
+
+	public void setMembers(List<Members> members) {
+		this.members = members;
 	}
 	
 	

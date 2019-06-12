@@ -14,4 +14,5 @@ import com.ains.chat.model.GroupChatDeatails;
  */
 public interface GroupChatDetailsDao extends CrudRepository<GroupChatDeatails, String>{
 
+	GroupChatDeatails findOneByGroupDetailsId(String groupDetailsId);
 }

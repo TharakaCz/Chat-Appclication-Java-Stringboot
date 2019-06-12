@@ -5,6 +5,7 @@
  */
 package com.ains.chat.dao;
 
+
 import org.springframework.data.repository.CrudRepository;
 
 import com.ains.chat.model.Chat;
@@ -14,6 +15,5 @@ import com.ains.chat.model.Chat;
  */
 public interface ChatDao extends CrudRepository<Chat, String>{
 
-	Chat findOneByChatId(String chatId)throws Exception;
-	
+	Chat findOneByChatId(String chatId);
 }

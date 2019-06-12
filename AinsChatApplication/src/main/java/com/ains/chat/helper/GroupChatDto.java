@@ -6,6 +6,9 @@
 package com.ains.chat.helper;
 
 import java.util.Date;
+import java.util.List;
+
+import com.ains.chat.model.GroupChatDeatails;
 
 /**
  * @author Tharaka Chandralal
@@ -21,6 +24,8 @@ public class GroupChatDto {
 	private String deleteBy;
 	private Date deleteDate;
 	private String deleteTime;
+	private List<MembersDto>membersDtos;
+	private List<GroupChatDetailsDto>groupChatDetailsDtos;
 	
 	public GroupChatDto() {
 		
@@ -96,6 +101,22 @@ public class GroupChatDto {
 
 	public void setDeleteTime(String deleteTime) {
 		this.deleteTime = deleteTime;
+	}
+
+	public List<MembersDto> getMembersDtos() {
+		return membersDtos;
+	}
+
+	public void setMembersDtos(List<MembersDto> membersDtos) {
+		this.membersDtos = membersDtos;
+	}
+
+	public List<GroupChatDetailsDto> getGroupChatDetailsDtos() {
+		return groupChatDetailsDtos;
+	}
+
+	public void setGroupChatDetailsDtos(List<GroupChatDetailsDto> groupChatDetailsDtos) {
+		this.groupChatDetailsDtos = groupChatDetailsDtos;
 	}
 	
 	
