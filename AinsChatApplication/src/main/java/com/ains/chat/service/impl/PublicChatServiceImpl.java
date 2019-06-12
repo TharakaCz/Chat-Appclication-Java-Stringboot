@@ -129,7 +129,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 	@Override
 	public List<PublicChatDto> getAllPublicChat() throws Exception {
 		
-		List<PublicChat>publicChats = publicChatDao.findAllByStatus(AppConstant.ACTIVE);
+		List<PublicChat>publicChats = publicChatDao.findAllByStatusOrderByTimeAsc(AppConstant.ACTIVE);
 		ArrayList<PublicChatDto>publicChatDtos = new ArrayList<>();
 		
 		publicChats.forEach(each->{

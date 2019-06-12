@@ -16,7 +16,7 @@ import com.ains.chat.model.PublicChat;
  */
 public interface PublicChatDao extends CrudRepository<PublicChat, String>{
 
-	PublicChat findOneByPublicChatId(String publicChatId)throws Exception;
+	PublicChat findOneByPublicChatId(String publicChatId);
 	
-	List<PublicChat> findAllByStatus(String status)throws Exception;
+	List<PublicChat> findAllByStatusOrderByTimeAsc(String status);
 }
