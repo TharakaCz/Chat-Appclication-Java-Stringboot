@@ -17,10 +17,13 @@ import org.springframework.stereotype.Service;
 
 import com.ains.chat.dao.ChatDao;
 import com.ains.chat.dao.PrivateChatDao;
+import com.ains.chat.dao.PrivateChatDetailsDao;
 import com.ains.chat.helper.ChatDto;
+import com.ains.chat.helper.PrivateChatDetailsDto;
 import com.ains.chat.helper.PrivateChatDto;
 import com.ains.chat.model.Chat;
 import com.ains.chat.model.PrivateChat;
+import com.ains.chat.model.PrivateChatDetails;
 import com.ains.chat.service.PrivateChatService;
 import com.ains.chat.utill.AppConstant;
 
@@ -32,18 +35,45 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 
 	@Autowired
 	private PrivateChatDao privateChatDao;
-
+	
+	@Autowired
+	private PrivateChatDetailsDao privateChatDetailsDao;
+	
 	@Autowired
 	private ChatDao chatDao;
+	
+	/* (non-Javadoc)
+	 * @see com.ains.chat.service.PrivateChatService#createPrivateChat(com.ains.chat.helper.PrivateChatDto)
+	 */
+	@Override
+	public String createPrivateChat(PrivateChatDto privateChatDto) throws Exception {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = sdf.parse(sdf.format(new Date()));
+		
+		Date time = new Date();
+	    String strDateFormat = "hh:mm:ss a";
+	    DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+	    String formattedDate= dateFormat.format(time);
+	
+		PrivateChat privateChat = new PrivateChat();
+		
+		privateChat.setPrivateChatId(UUID.randomUUID().toString());
+		privateChat.setDate(date);
+		privateChat.setStatus(AppConstant.ACTIVE);
+		privateChat.setTime(formattedDate);
+		privateChat.setPrivateUserOne(privateChatDto.getPrivateUserOne());
+		privateChat.setPrivateUserTwo(privateChatDto.getPrivateUserTwo());
+		
+		privateChatDao.save(privateChat);
+		return "Private Chat Start Ok . . !";
+	}
 	
 	/* (non-Javadoc)
 	 * @see com.ains.chat.service.PrivateChatService#sendPrivateChat(com.ains.chat.helper.PrivateChatDto)
 	 */
 	@Override
 	public String sendPrivateChat(PrivateChatDto privateChatDto) throws Exception {
-		
-		PrivateChat privateChat = new PrivateChat();
-		Chat chat = new Chat();
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = sdf.parse(sdf.format(new Date()));
@@ -53,26 +83,43 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	    DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
 	    String formattedDate= dateFormat.format(time);
 	    
-	    chat.setChatId(UUID.randomUUID().toString());
-	    chat.setChatType(AppConstant.PRIVATE_CHAT);
-	    chat.setDate(date);
-	    chat.setMassage(privateChatDto.getChatDto().getMassage());
-	    chat.setStatus(AppConstant.ACTIVE);
-	    chat.setTime(formattedDate);
-	    chat.setUserName(privateChatDto.getChatDto().getUserName());
-	    
-		privateChat.setPrivateChatId(UUID.randomUUID().toString());
-		privateChat.setSenderName(privateChatDto.getChatDto().getUserName());
-		privateChat.setResiverName(privateChatDto.getResiverName());
-		privateChat.setDate(date);
-		privateChat.setTime(formattedDate);
-		privateChat.setChat(chatDao.save(chat));
-		privateChat.setStatus(AppConstant.ACTIVE);
-		privateChat.setUserOne(privateChatDto.getUserOne());
-		privateChat.setUserTwo(privateChatDto.getUserTwo());
-		privateChatDao.save(privateChat);
+		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatDto.getPrivateChatId(), AppConstant.ACTIVE);
+		PrivateChatDetails privateChatDetails = new PrivateChatDetails();
 		
-		return "Private Chat Send Succsess . . !";
+		if (privateChat.getPrivateUserOne().equals(privateChatDto.getPrivateUserOne())&& privateChat.getPrivateUserTwo().equals(privateChatDto.getPrivateUserTwo()) ||
+				privateChat.getPrivateUserTwo().equals(privateChatDto.getPrivateUserOne()) && privateChat.getPrivateUserOne().equals(privateChatDto.getPrivateUserTwo())) {
+			
+			privateChatDto.getPrivateChatDetailsDtos().forEach(each->{
+				
+				Chat chat = new Chat();
+				
+				chat.setChatId(UUID.randomUUID().toString());
+				chat.setChatType(AppConstant.PRIVATE_CHAT);
+				chat.setDate(date);
+				chat.setTime(formattedDate);
+				chat.setMassage(each.getChatDto().getMassage());
+				chat.setStatus(AppConstant.ACTIVE);
+				chat.setUserName(privateChatDto.getPrivateUserOne());
+				
+				privateChatDetails.setPrivateChatDetailsId(UUID.randomUUID().toString());
+				privateChatDetails.setDate(date);
+				privateChatDetails.setTime(formattedDate);
+				privateChatDetails.setStatus(AppConstant.ACTIVE);
+				privateChatDetails.setChat(chat);
+				privateChatDetails.setPrivateChat(privateChat);
+				privateChatDetails.setUserName(privateChatDto.getPrivateUserOne());
+				
+			});
+			
+			privateChatDetailsDao.save(privateChatDetails);
+			
+			return "Private Chat Send Succsess . . !";
+		}else {
+			
+			return "Un Authorized . . !";
+		}
+		
+		
 	}
 
 	/* (non-Javadoc)
@@ -81,6 +128,8 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	@Override
 	public String editPrivateChat(PrivateChatDto privateChatDto) throws Exception {
 		
+		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatDto.getPrivateChatId(), AppConstant.ACTIVE);
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = sdf.parse(sdf.format(new Date()));
 		
@@ -89,18 +138,20 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	    DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
 	    String formattedDate= dateFormat.format(time);
 	    
-		PrivateChat privateChat = privateChatDao.findOneByPrivateChatId(privateChatDto.getPrivateChatId());
-		Chat chat = chatDao.findOneByChatId(privateChatDto.getChatDto().getChatId());
 		
-		chat.setDate(date);
-		chat.setMassage(privateChatDto.getChatDto().getMassage());
-		chat.setTime(formattedDate);
+		PrivateChatDetails privateChatDetails = new PrivateChatDetails();
 		
-		privateChat.setTime(formattedDate);
-		privateChat.setDate(date);
-		privateChat.setChat(chatDao.save(chat));
-		privateChatDao.save(privateChat);
-		return "Massage Update Succsess . . !";
+		privateChatDto.getPrivateChatDetailsDtos().forEach(each->{
+			Chat chat = chatDao.findOneByChatId(each.getChatDto().getChatId());
+			chat.setMassage(each.getChatDto().getMassage());
+			chat.setTime(formattedDate);
+			chat.setDate(date);
+			privateChatDetails.setChat(chat);
+			
+		});
+		privateChatDetailsDao.save(privateChatDetails);
+		
+		return "Chat Edited Succsess . . !";
 	}
 
 	/* (non-Javadoc)
@@ -109,20 +160,14 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	@Override
 	public String deletePrivateChat(String privateChatId) throws Exception {
 		
-		PrivateChat privateChat = privateChatDao.findOneByPrivateChatId(privateChatId);
-		Chat chat = chatDao.findOneByChatId(privateChat.getChat().getChatId());
+		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatId, AppConstant.ACTIVE);
 		
 		privateChat.setStatus(AppConstant.DEACTIVE);
-		chat.setStatus(AppConstant.DEACTIVE);
-		
 		if (privateChat != null) {
-			
 			privateChatDao.save(privateChat);
-			chatDao.save(chat);
-			return "Massage Delete Succsess . . !";
+			return "Chat Succsessfully Deleted . . !";
 		}else {
-			
-			return "Massage Delete Faild Pleace Try Again . . !";
+			return "Chat Delete Faild Pleace Try Again . . !";
 		}
 	}
 
@@ -132,46 +177,96 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	@Override
 	public PrivateChatDto searchPrivateChat(String privateChatId) throws Exception {
 		
-		PrivateChat privateChat = privateChatDao.findOneByPrivateChatId(privateChatId);
-		PrivateChatDto privateChatDto = getAllPrivateChat(privateChat);
+		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatId, AppConstant.ACTIVE);
+		PrivateChatDto privateChatDto = getPrivateChat(privateChat);
 		return privateChatDto;
 	}
 
 	/* (non-Javadoc)
-	 * @see com.ains.chat.service.PrivateChatService#getAllPrivateChat()
+	 * @see com.ains.chat.service.PrivateChatService#getAllPrivateChat(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<PrivateChatDto> getAllPrivateChat(String uone,String utwo) throws Exception {
-		List<PrivateChat>privateChats = privateChatDao.findAllByUserOneAndUserTwoAndStatus(uone, utwo, AppConstant.ACTIVE);
+	public List<PrivateChatDto> getAllPrivateChat(String user) throws Exception {
+		
+		List<PrivateChat>privateChats = privateChatDao.findAllByPrivateUserOneOrPrivateUserTwoAndStatus(user, user, AppConstant.ACTIVE);
 		ArrayList<PrivateChatDto>privateChatDtos = new ArrayList<>();
 		
 		privateChats.forEach(each->{
 			try {
-				privateChatDtos.add(getAllPrivateChat(each));
+				privateChatDtos.add(getPrivateChatList(each));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+		});
+	return privateChatDtos;
+		
+	}
+
+	
+	private PrivateChatDto getPrivateChatList(PrivateChat privateChat)throws Exception{
+		
+		PrivateChatDto privateChatDto = new  PrivateChatDto();
+		
+		privateChatDto.setPrivateChatId(privateChat.getPrivateChatId());
+		privateChatDto.setDate(privateChat.getDate());
+		privateChatDto.setPrivateUserOne(privateChat.getPrivateUserOne());
+		privateChatDto.setPrivateUserTwo(privateChat.getPrivateUserTwo());
+		privateChatDto.setStatus(privateChat.getStatus());
+		privateChatDto.setTime(privateChat.getTime());
+		
+		return privateChatDto;
+	}
+	
+
+	private PrivateChatDto getPrivateChat(PrivateChat privateChat)throws Exception{
+		
+		PrivateChatDto privateChatDto = new  PrivateChatDto();
+		ArrayList<PrivateChatDetailsDto>privateChatDetailsDtos = new ArrayList<>();
+		
+		privateChatDto.setPrivateChatId(privateChat.getPrivateChatId());
+		privateChatDto.setDate(privateChat.getDate());
+		privateChatDto.setPrivateUserOne(privateChat.getPrivateUserOne());
+		privateChatDto.setPrivateUserTwo(privateChat.getPrivateUserTwo());
+		privateChatDto.setStatus(privateChat.getStatus());
+		privateChatDto.setTime(privateChat.getTime());
+		
+		privateChat.getPrivateChatDetails().forEach(each->{
+			try {
+				System.out.println("each");
+				privateChatDetailsDtos.add(getPrivateChatDetails(each));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		});
-		return privateChatDtos;
-	}
-	
-	private PrivateChatDto getAllPrivateChat(PrivateChat privateChat)throws Exception{
-		Chat chat = chatDao.findOneByChatId(privateChat.getChat().getChatId());
-		ChatDto chatDto = new ChatDto();
-		chatDto.setChatId(chat.getChatId());
-		chatDto.setDate(chat.getDate());
-		chatDto.setMassage(chat.getMassage());
-		chatDto.setTime(chat.getTime());
-		chatDto.setUserName(chat.getUserName());
 		
-		PrivateChatDto privateChatDto = new PrivateChatDto();
-		privateChatDto.setPrivateChatId(privateChat.getPrivateChatId());
-		privateChatDto.setDate(privateChat.getDate());
-		privateChatDto.setTime(privateChat.getTime());
-		privateChatDto.setChatDto(chatDto);
+		privateChatDto.setPrivateChatDetailsDtos(privateChatDetailsDtos);
 		
 		return privateChatDto;
 	}
-
 	
+	private PrivateChatDetailsDto getPrivateChatDetails(PrivateChatDetails privateChatDetails)throws Exception{
+		
+		PrivateChatDetailsDto privateChatDetailsDto = new PrivateChatDetailsDto();
+		
+		Chat chat = chatDao.findOneByChatId(privateChatDetails.getChat().getChatId());
+		ChatDto chatDto = new ChatDto();
+		
+		chatDto.setChatId(chat.getChatId());
+		chatDto.setChatType(chat.getChatType());
+		chatDto.setMassage(chat.getMassage());
+		chatDto.setDate(chat.getDate());
+		chatDto.setTime(chat.getTime());
+		chatDto.setUserName(chat.getUserName());
+		
+		privateChatDetailsDto.setPrivateChatDetailsId(privateChatDetails.getPrivateChatDetailsId());
+		privateChatDetailsDto.setDate(privateChatDetails.getDate());
+		privateChatDetailsDto.setTime(privateChatDetails.getTime());
+		privateChatDetailsDto.setUserName(privateChatDetails.getUserName());
+		privateChatDetailsDto.setChatDto(chatDto);
+		
+		return privateChatDetailsDto;
+		
+	}
 }
+

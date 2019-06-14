@@ -22,6 +22,7 @@ public interface PrivateChatService {
 	
 	public PrivateChatDto searchPrivateChat(String privateChatId)throws Exception;
 	
-	public List<PrivateChatDto>getAllPrivateChat(String uone,String utwo)throws Exception;
+	public List<PrivateChatDto>getAllPrivateChat(String user)throws Exception;
 
+	public String createPrivateChat(PrivateChatDto privateChatDto)throws Exception;
 }

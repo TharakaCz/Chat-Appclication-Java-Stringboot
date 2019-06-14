@@ -30,7 +30,7 @@ public class Chat {
 	private String time;
 	private List<GroupChatDeatails>groupChatDeatails;
 	private List<PublicChat>publicChats;
-	private List<PrivateChat>privateChats;
+	private List<PrivateChatDetails>privateChatDetails;
 	
 	public Chat() {
 		
@@ -118,14 +118,16 @@ public class Chat {
 		this.publicChats = publicChats;
 	}
 
-	@OneToMany(mappedBy="chat",targetEntity=PrivateChat.class)
-	public List<PrivateChat> getPrivateChats() {
-		return privateChats;
+	@OneToMany(mappedBy="chat",targetEntity=PrivateChatDetails.class)
+	public List<PrivateChatDetails> getPrivateChatDetails() {
+		return privateChatDetails;
 	}
 
-	public void setPrivateChats(List<PrivateChat> privateChats) {
-		this.privateChats = privateChats;
+	public void setPrivateChatDetails(List<PrivateChatDetails> privateChatDetails) {
+		this.privateChatDetails = privateChatDetails;
 	}
+
+	
 
 	
 	

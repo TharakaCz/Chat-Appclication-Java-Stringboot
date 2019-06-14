@@ -12,7 +12,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import javax.swing.GroupLayout.Group;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -353,8 +352,6 @@ public class GroupChatServiceImpl implements GroupChatService{
 		
 		GroupChatDto groupChatDto = new GroupChatDto();
 		ArrayList<GroupChatDetailsDto> groupChatDetailsDtos = new ArrayList<>();
-		ChatDto chatDto = new ChatDto();
-		GroupChatDetailsDto groupdetail = new GroupChatDetailsDto();
 		
 		groupChatDto.setGroupId(groupChat.getGroupId());
 		groupChatDto.setCreateBy(groupChat.getCreateBy());
