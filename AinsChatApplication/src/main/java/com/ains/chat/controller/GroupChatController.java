@@ -58,7 +58,7 @@ public class GroupChatController {
 		}
 	}
 	
-	@PostMapping(value="/removeUser/{groupId}/{memberName:.+}/{userId}")
+	@DeleteMapping(value="/removeUser/{groupId}/{memberName:.+}/{userId}")
 	public ResponseEntity<Object>removeUser(@PathVariable("groupId")String groupId,@PathVariable("memberName")String memberName,@PathVariable("userId")String userId){
 		try {
 			return new ResponseEntity<Object>(groupChatService.removeUser( groupId,memberName,userId),HttpStatus.OK);

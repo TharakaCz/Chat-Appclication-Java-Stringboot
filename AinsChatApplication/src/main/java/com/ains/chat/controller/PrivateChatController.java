@@ -47,6 +47,12 @@ public class PrivateChatController {
 	@PostMapping(value="/sendPrivateChat")
 	public ResponseEntity<Object>sendPrivateChat(@RequestBody PrivateChatDto privateChatDto){
 		try {
+			System.out.println("ID"+privateChatDto.getPrivateChatId());
+			System.out.println("user One"+privateChatDto.getPrivateUserOne());
+			System.out.println("user Two"+privateChatDto.getPrivateUserTwo());
+			privateChatDto.getPrivateChatDetailsDtos().forEach(each->{
+				System.out.println("Massage"+each.getChatDto().getMassage());
+			});
 			return new ResponseEntity<Object>(privateChatService.sendPrivateChat(privateChatDto),HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();

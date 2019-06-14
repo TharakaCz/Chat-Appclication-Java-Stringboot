@@ -8,6 +8,8 @@ package com.ains.chat.service;
 import java.util.List;
 
 import com.ains.chat.helper.GroupChatDto;
+import com.ains.chat.helper.MembersDto;
+import com.ains.chat.model.Members;
 
 /**
  * @author Tharaka Chandralal
@@ -33,4 +35,8 @@ public interface GroupChatService {
 	public String editChat(GroupChatDto groupChatDto)throws Exception;
 	
 	public GroupChatDto searchGroupChat(String groupId)throws Exception;
+	
+	public String promoteMember(String memberId)throws Exception;
+	
+	public List<MembersDto>getAllMembers(String groupId)throws Exception; 
 }

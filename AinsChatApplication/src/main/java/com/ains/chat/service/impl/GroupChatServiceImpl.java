@@ -23,10 +23,12 @@ import com.ains.chat.dao.MembersDao;
 import com.ains.chat.helper.ChatDto;
 import com.ains.chat.helper.GroupChatDetailsDto;
 import com.ains.chat.helper.GroupChatDto;
+import com.ains.chat.helper.MembersDto;
 import com.ains.chat.model.Chat;
 import com.ains.chat.model.GroupChat;
 import com.ains.chat.model.GroupChatDeatails;
 import com.ains.chat.model.Members;
+import com.ains.chat.model.PrivateChat;
 import com.ains.chat.service.GroupChatService;
 import com.ains.chat.utill.AppConstant;
 
@@ -74,7 +76,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 		 groupChatDto.getMembersDtos().forEach(each->{
 		    	members.setMemberId(UUID.randomUUID().toString());
 			    members.setMemberName(groupChatDto.getCreateBy());
-		    	members.setMemberUserDbId(each.getMemberUserDbId());
+		    	members.setMemberUserDbId(UUID.randomUUID().toString());
 		    	members.setRole(AppConstant.GROUP_SUPER_ADMIN);
 		    	members.setStatus(AppConstant.ACTIVE);
 		    	members.setGroupChat(groupChatDao.save(groupChat));
@@ -99,7 +101,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 			members.setGroupChat(groupChat);
 			members.setRole(AppConstant.GROUP_USER);
 			members.setStatus(AppConstant.ACTIVE);
-			members.setMemberUserDbId(each.getMemberUserDbId());
+			members.setMemberUserDbId(UUID.randomUUID().toString());
 			members.setMemberName(each.getMemberName());
 			
 			membersDao.save(members);
@@ -306,7 +308,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 			GroupChatDeatails groupChatDeatails = groupChatDetailsDao.findOneByGroupDetailsId(each.getGroupDetailsId());
 			Chat chat;
 			try {
-				chat = chatDao.findOneByChatId(each.getChatDto().getChatId());
+				chat = chatDao.findOneByChatIdAndStatus(each.getChatDto().getChatId(),AppConstant.ACTIVE);
 				chat.setChatType(AppConstant.GROUP_CHAT);
 				chat.setDate(date);
 				chat.setTime(formattedDate);
@@ -340,6 +342,37 @@ public class GroupChatServiceImpl implements GroupChatService{
 	}
 	
 
+	
+
+	/* (non-Javadoc)
+	 * @see com.ains.chat.service.GroupChatService#promoteMember()
+	 */
+	@Override
+	public String promoteMember(String memberId) throws Exception {
+		GroupChat groupChat = groupChatDao.findOneByGroupIdAndStatus(memberId, AppConstant.ACTIVE);
+		
+		return "";
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.ains.chat.service.GroupChatService#getAllMembers(java.lang.String)
+	 */
+	@Override
+	public List<MembersDto> getAllMembers(String groupId) throws Exception {
+		GroupChat groupChat = groupChatDao.findOneByGroupIdAndStatus(groupId, AppConstant.ACTIVE);
+		List<Members>members = membersDao.findAllByGroupChatAndStatus(groupChat, AppConstant.ACTIVE);
+		ArrayList<MembersDto>membersDtos = new  ArrayList<MembersDto>();
+		
+		members.forEach(each->{
+			try {
+				membersDtos.add(getMember(each));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		return membersDtos;
+	}
+	
 	private GroupChatDto getAllGroupsByNames(GroupChat groupChat)throws Exception{
 		
 		GroupChatDto groupChatDto = new GroupChatDto();
@@ -352,11 +385,14 @@ public class GroupChatServiceImpl implements GroupChatService{
 		
 		GroupChatDto groupChatDto = new GroupChatDto();
 		ArrayList<GroupChatDetailsDto> groupChatDetailsDtos = new ArrayList<>();
-		
 		groupChatDto.setGroupId(groupChat.getGroupId());
 		groupChatDto.setCreateBy(groupChat.getCreateBy());
 		groupChatDto.setCreateDate(groupChat.getCreateDate());
 		groupChatDto.setCreateTime(groupChat.getCreateTime());
+		
+		groupChat.getMembers().forEach(each->{
+			
+		});
 		
 		groupChat.getGroupChatDeatails().forEach(each->{
 		
@@ -377,7 +413,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 	private GroupChatDetailsDto getDetails(GroupChatDeatails groupChatDeatails)throws Exception{
 		GroupChatDetailsDto groupChatDetailsDto = new GroupChatDetailsDto();
 		ChatDto chatDto = new ChatDto();
-		Chat chat= chatDao.findOneByChatId(groupChatDeatails.getChat().getChatId());
+		Chat chat= chatDao.findOneByChatIdAndStatus(groupChatDeatails.getChat().getChatId(),AppConstant.ACTIVE);
 		
 		
 		chatDto.setChatId(chat.getChatId());
@@ -394,4 +430,16 @@ public class GroupChatServiceImpl implements GroupChatService{
 		
 		return groupChatDetailsDto;
 	}
+	
+	private MembersDto getMember(Members members)throws Exception{
+		MembersDto membersDto = new MembersDto();
+		membersDto.setMemberId(members.getMemberId());
+		membersDto.setMemberName(members.getMemberName());
+		membersDto.setMemberUserDbId(members.getMemberUserDbId());
+		membersDto.setRole(members.getRole());
+		
+		return membersDto;
+	}
+
+	
  }

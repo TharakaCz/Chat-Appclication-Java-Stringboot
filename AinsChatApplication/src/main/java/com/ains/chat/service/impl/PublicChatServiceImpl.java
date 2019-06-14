@@ -86,7 +86,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 	    DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
 	    String formattedDate= dateFormat.format(time);
 	    
-	    Chat chat = chatDao.findOneByChatId(publicChatDto.getChatDto().getChatId());
+	    Chat chat = chatDao.findOneByChatIdAndStatus(publicChatDto.getChatDto().getChatId(),AppConstant.ACTIVE);
 	    chat.setDate(date);
 	    chat.setTime(formattedDate);
 	    chat.setMassage(publicChatDto.getChatDto().getMassage());
@@ -107,7 +107,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 	public String deleteChat(String publicChatId) throws Exception {
 		
 		PublicChat publicChat = publicChatDao.findOneByPublicChatId(publicChatId);
-		Chat chat = chatDao.findOneByChatId(publicChat.getChat().getChatId());
+		Chat chat = chatDao.findOneByChatIdAndStatus(publicChat.getChat().getChatId(),AppConstant.ACTIVE);
 		
 		chat.setStatus(AppConstant.DEACTIVE);
 		publicChat.setStatus(AppConstant.DEACTIVE);
@@ -160,7 +160,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 	private PublicChatDto getPublicChat(PublicChat publicChat)throws Exception{
 		
 		PublicChatDto publicChatDto = new PublicChatDto();
-		Chat chat = chatDao.findOneByChatId(publicChat.getChat().getChatId());
+		Chat chat = chatDao.findOneByChatIdAndStatus(publicChat.getChat().getChatId(),AppConstant.ACTIVE);
 		ChatDto chatDto = new ChatDto();
 		
 		chatDto.setChatId(chat.getChatId());

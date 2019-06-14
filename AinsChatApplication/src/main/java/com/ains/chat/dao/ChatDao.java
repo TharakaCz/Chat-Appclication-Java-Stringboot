@@ -6,6 +6,8 @@
 package com.ains.chat.dao;
 
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 
 import com.ains.chat.model.Chat;
@@ -15,6 +17,9 @@ import com.ains.chat.model.Chat;
  */
 public interface ChatDao extends CrudRepository<Chat, String>{
 
-	Chat findOneByChatId(String chatId);
+	Chat findOneByChatIdAndStatus(String chatId,String status);
+	
+	List<Chat> findAllByStatus(String status);
+	List<Chat> findAllByChatTypeAndStatus(String chatType,String status);
 	
 }

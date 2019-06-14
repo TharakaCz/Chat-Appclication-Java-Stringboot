@@ -48,6 +48,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	@Override
 	public String createPrivateChat(PrivateChatDto privateChatDto) throws Exception {
 		
+		/* List<PrivateChat>privateChats = privateChatDao.fin */ /* Create Plez */
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = sdf.parse(sdf.format(new Date()));
 		
@@ -66,7 +67,11 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 		privateChat.setPrivateUserTwo(privateChatDto.getPrivateUserTwo());
 		
 		privateChatDao.save(privateChat);
-		return "Private Chat Start Ok . . !";
+		
+		String id =privateChat.getPrivateChatId();
+		return id;
+		
+		
 	}
 	
 	/* (non-Javadoc)
@@ -74,6 +79,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	 */
 	@Override
 	public String sendPrivateChat(PrivateChatDto privateChatDto) throws Exception {
+		
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = sdf.parse(sdf.format(new Date()));
@@ -128,28 +134,16 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	@Override
 	public String editPrivateChat(PrivateChatDto privateChatDto) throws Exception {
 		
-		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatDto.getPrivateChatId(), AppConstant.ACTIVE);
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse(sdf.format(new Date()));
-		
-		Date time = new Date();
-	    String strDateFormat = "hh:mm:ss a";
-	    DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-	    String formattedDate= dateFormat.format(time);
-	    
-		
-		PrivateChatDetails privateChatDetails = new PrivateChatDetails();
+//		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatDto.getPrivateChatId(), AppConstant.ACTIVE);
 		
 		privateChatDto.getPrivateChatDetailsDtos().forEach(each->{
-			Chat chat = chatDao.findOneByChatId(each.getChatDto().getChatId());
+			PrivateChatDetails privateChatDetails = privateChatDetailsDao.findOneByPrivateChatDetailsIdAndStatus(each.getPrivateChatDetailsId(), AppConstant.ACTIVE);
+			Chat chat = chatDao.findOneByChatIdAndStatus(each.getChatDto().getChatId(),AppConstant.ACTIVE);
 			chat.setMassage(each.getChatDto().getMassage());
-			chat.setTime(formattedDate);
-			chat.setDate(date);
 			privateChatDetails.setChat(chat);
-			
+			privateChatDetailsDao.save(privateChatDetails);
 		});
-		privateChatDetailsDao.save(privateChatDetails);
+		
 		
 		return "Chat Edited Succsess . . !";
 	}
@@ -179,6 +173,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 		
 		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatId, AppConstant.ACTIVE);
 		PrivateChatDto privateChatDto = getPrivateChat(privateChat);
+		
 		return privateChatDto;
 	}
 
@@ -249,23 +244,46 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 		
 		PrivateChatDetailsDto privateChatDetailsDto = new PrivateChatDetailsDto();
 		
-		Chat chat = chatDao.findOneByChatId(privateChatDetails.getChat().getChatId());
+		Chat chat = chatDao.findOneByChatIdAndStatus(privateChatDetails.getChat().getChatId(),AppConstant.ACTIVE);
 		ChatDto chatDto = new ChatDto();
 		
-		chatDto.setChatId(chat.getChatId());
-		chatDto.setChatType(chat.getChatType());
-		chatDto.setMassage(chat.getMassage());
-		chatDto.setDate(chat.getDate());
-		chatDto.setTime(chat.getTime());
-		chatDto.setUserName(chat.getUserName());
+		if (chat != null) {
+			chatDto.setChatId(chat.getChatId());
+			chatDto.setChatType(chat.getChatType());
+			chatDto.setMassage(chat.getMassage());
+			chatDto.setDate(chat.getDate());
+			chatDto.setTime(chat.getTime());
+			chatDto.setUserName(chat.getUserName());
+			
+			privateChatDetailsDto.setPrivateChatDetailsId(privateChatDetails.getPrivateChatDetailsId());
+			privateChatDetailsDto.setDate(privateChatDetails.getDate());
+			privateChatDetailsDto.setTime(privateChatDetails.getTime());
+			privateChatDetailsDto.setUserName(privateChatDetails.getUserName());
+			privateChatDetailsDto.setChatDto(chatDto);
+			
+			
+			return privateChatDetailsDto;
+			
+		}else {
+			/*
+			 * chatDto.setChatId(chat.getChatId()); chatDto.setChatType(chat.getChatType());
+			 * chatDto.setMassage(chat.getMassage()); chatDto.setDate(chat.getDate());
+			 * chatDto.setTime(chat.getTime()); chatDto.setUserName(chat.getUserName());
+			 */
+			/*
+			 * privateChatDetailsDto.setPrivateChatDetailsId(privateChatDetails.
+			 * getPrivateChatDetailsId());
+			 * privateChatDetailsDto.setDate(privateChatDetails.getDate());
+			 * privateChatDetailsDto.setTime(privateChatDetails.getTime());
+			 * privateChatDetailsDto.setUserName(privateChatDetails.getUserName());
+			 */
+			/* privateChatDetailsDto.setChatDto(chatDto); */
+			
+			
+			
+			return null;
+		}
 		
-		privateChatDetailsDto.setPrivateChatDetailsId(privateChatDetails.getPrivateChatDetailsId());
-		privateChatDetailsDto.setDate(privateChatDetails.getDate());
-		privateChatDetailsDto.setTime(privateChatDetails.getTime());
-		privateChatDetailsDto.setUserName(privateChatDetails.getUserName());
-		privateChatDetailsDto.setChatDto(chatDto);
-		
-		return privateChatDetailsDto;
 		
 	}
 }

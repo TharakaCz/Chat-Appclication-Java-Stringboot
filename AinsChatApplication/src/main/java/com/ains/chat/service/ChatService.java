@@ -5,6 +5,7 @@
  */
 package com.ains.chat.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ains.chat.helper.ChatDto;
@@ -14,13 +15,13 @@ import com.ains.chat.helper.ChatDto;
  */
 public interface ChatService {
 
-	public String sendMassage(ChatDto chatDto)throws Exception;
-	
 	public String deleteMassage(String chatId)throws Exception;
 	
-	public String editMassage(ChatDto chatDto)throws Exception;
-	
-	public List<ChatDto> getAllMassageUsingType()throws Exception;
+	public List<ChatDto> getAllMassageUsingType(String chatType)throws Exception;
 	
 	public List<ChatDto>getAllMassage()throws Exception;
+	
+	public ArrayList<String> getAllChatTypes()throws Exception;
+	
+	public String removeChats()throws Exception;
 }
