@@ -6,13 +6,11 @@
 package com.ains.chat.model;
 
 import java.util.Date;
-
-import javax.persistence.CascadeType;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -25,12 +23,10 @@ public class PrivateChat {
 	private String privateChatId;
 	private Date date;
 	private String time;
-	private String senderName;
-	private String resiverName;
-	private Chat chat;
-	private String userOne;
-	private String userTwo;
+	private String privateUserOne;
+	private String privateUserTwo;
 	private String status;
+	private List<PrivateChatDetails>privateChatDetails;
 	
 	public PrivateChat() {
 		
@@ -64,15 +60,6 @@ public class PrivateChat {
 		this.time = time;
 	}
 
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumn(name="CHATID")
-	public Chat getChat() {
-		return chat;
-	}
-
-	public void setChat(Chat chat) {
-		this.chat = chat;
-	}
 
 	@Column(name="STATUS",length=10,nullable=false)
 	public String getStatus() {
@@ -84,41 +71,34 @@ public class PrivateChat {
 		this.status = status;
 	}
 
-	@Column(name="SNAME",length=255,nullable=false)
-	public String getSenderName() {
-		return senderName;
+	@Column(name="PCUONE",length=255,nullable=false)
+	public String getPrivateUserOne() {
+		return privateUserOne;
+	}
+	
+	public void setPrivateUserOne(String privateUserOne) {
+		this.privateUserOne = privateUserOne;
 	}
 
-	public void setSenderName(String senderName) {
-		this.senderName = senderName;
+	@Column(name="PCUTWO",length=255,nullable=false)
+	public String getPrivateUserTwo() {
+		return privateUserTwo;
 	}
 
-	@Column(name="RNMAE",length=255,nullable=false)
-	public String getResiverName() {
-		return resiverName;
+	public void setPrivateUserTwo(String privateUserTwo) {
+		this.privateUserTwo = privateUserTwo;
 	}
 
-	public void setResiverName(String resiverName) {
-		this.resiverName = resiverName;
+	@OneToMany(mappedBy="privateChat",targetEntity=PrivateChatDetails.class)
+	public List<PrivateChatDetails> getPrivateChatDetails() {
+		return privateChatDetails;
 	}
 
-	@Column(name="UONE",length=255,nullable=false)
-	public String getUserOne() {
-		return userOne;
+	public void setPrivateChatDetails(List<PrivateChatDetails> privateChatDetails) {
+		this.privateChatDetails = privateChatDetails;
 	}
 
-	public void setUserOne(String userOne) {
-		this.userOne = userOne;
-	}
-
-	@Column(name="UTWO",length=255,nullable=false)
-	public String getUserTwo() {
-		return userTwo;
-	}
-
-	public void setUserTwo(String userTwo) {
-		this.userTwo = userTwo;
-	}
+	
 	
 	
 	

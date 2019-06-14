@@ -5,6 +5,7 @@
  */
 package com.ains.chat.controller;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ains.chat.helper.PrivateChatDto;
 import com.ains.chat.service.PrivateChatService;
 
+
 /**
  * @author Tharaka Chandralal
  */
@@ -31,49 +33,63 @@ public class PrivateChatController {
 	@Autowired
 	private PrivateChatService privateChatService;
 	
+	
+	@PostMapping(value="/createPrivateChat")
+	public ResponseEntity<Object>createPrivateChat(@RequestBody PrivateChatDto privateChatDto){
+		try {
+			return new ResponseEntity<Object>(privateChatService.createPrivateChat(privateChatDto),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	@PostMapping(value="/sendPrivateChat")
 	public ResponseEntity<Object>sendPrivateChat(@RequestBody PrivateChatDto privateChatDto){
 		try {
 			return new ResponseEntity<Object>(privateChatService.sendPrivateChat(privateChatDto),HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@PostMapping(value="/updatePrivateChat")
-	public ResponseEntity<Object>editPrivateMassage(@RequestBody PrivateChatDto privateChatDto){
+	@PostMapping(value="/editPrivateChat")
+	public ResponseEntity<Object>editPrivateChat(@RequestBody PrivateChatDto privateChatDto){
 		try {
 			return new ResponseEntity<Object>(privateChatService.editPrivateChat(privateChatDto),HttpStatus.OK);
 		} catch (Exception e) {
-			return  new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		
 	}
 	
 	@DeleteMapping(value="/deletePrivateChat/{privateChatId}")
-	public ResponseEntity<Object>deletePrivateMassage(@PathVariable("privateChatId") String privateChatId){
+	public ResponseEntity<Object>deletePrivateChat(@PathVariable("privateChatId") String privateChatId){
 		try {
 			return new ResponseEntity<Object>(privateChatService.deletePrivateChat(privateChatId),HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-		
-	}
-	
-	@GetMapping(value="/searchPrivateMassage/{privateChatId}")
-	public ResponseEntity<Object>searchPrivateMassage(@PathVariable("privateChatId")String privateChatId){
-		try {
-			return new ResponseEntity<Object>(privateChatService.deletePrivateChat(privateChatId),HttpStatus.OK);
-		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@GetMapping(value="/getAllPrivateMassage/{one:.+}/{two:.+}")
-	public ResponseEntity<Object>getPrivateMassages(@PathVariable("one")String one,@PathVariable("two")String two){
+	@GetMapping(value="/getAllPrivateChats/{user:.+}")
+	public ResponseEntity<Object>getAllPrivateChat(@PathVariable("user")String user){
 		try {
-			return new ResponseEntity<Object>(privateChatService.getAllPrivateChat(one, two),HttpStatus.OK);
+			return new ResponseEntity<Object>(privateChatService.getAllPrivateChat(user),HttpStatus.OK);
 		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
+	@GetMapping(value="/searchPrivateChat/{privateChatId}")
+	public ResponseEntity<Object>searchPrivateChat(@PathVariable("privateChatId")String privateChatId){
+		try {
+			return new ResponseEntity<Object>(privateChatService.searchPrivateChat(privateChatId),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

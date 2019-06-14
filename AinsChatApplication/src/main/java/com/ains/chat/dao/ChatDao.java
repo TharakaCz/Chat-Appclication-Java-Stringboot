@@ -16,4 +16,5 @@ import com.ains.chat.model.Chat;
 public interface ChatDao extends CrudRepository<Chat, String>{
 
 	Chat findOneByChatId(String chatId);
+	
 }

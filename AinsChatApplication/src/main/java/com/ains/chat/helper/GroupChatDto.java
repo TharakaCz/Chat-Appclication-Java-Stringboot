@@ -8,7 +8,6 @@ package com.ains.chat.helper;
 import java.util.Date;
 import java.util.List;
 
-import com.ains.chat.model.GroupChatDeatails;
 
 /**
  * @author Tharaka Chandralal

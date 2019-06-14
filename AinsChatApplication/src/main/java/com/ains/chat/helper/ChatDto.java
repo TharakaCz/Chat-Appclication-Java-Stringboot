@@ -21,7 +21,7 @@ public class ChatDto {
 	private String time;
 	private List<GroupChatDetailsDto>groupChatDetailsDtos;
 	private List<PublicChatDto>publicChatDtos;
-	private List<PrivateChatDto>PrivateChatDtos;
+	private List<PrivateChatDetailsDto>privateChatDetailsDtos;
 	
 	public ChatDto() {
 		
@@ -91,13 +91,15 @@ public class ChatDto {
 		this.publicChatDtos = publicChatDtos;
 	}
 
-	public List<PrivateChatDto> getPrivateChatDtos() {
-		return PrivateChatDtos;
+	public List<PrivateChatDetailsDto> getPrivateChatDetailsDtos() {
+		return privateChatDetailsDtos;
 	}
 
-	public void setPrivateChatDtos(List<PrivateChatDto> PrivateChatDtos) {
-		this.PrivateChatDtos = PrivateChatDtos;
+	public void setPrivateChatDetailsDtos(List<PrivateChatDetailsDto> privateChatDetailsDtos) {
+		this.privateChatDetailsDtos = privateChatDetailsDtos;
 	}
+
+	
 
 	
 	
