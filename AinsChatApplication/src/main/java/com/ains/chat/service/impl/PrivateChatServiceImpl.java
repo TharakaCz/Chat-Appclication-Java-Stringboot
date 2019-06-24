@@ -92,8 +92,6 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatDto.getPrivateChatId(), AppConstant.ACTIVE);
 		PrivateChatDetails privateChatDetails = new PrivateChatDetails();
 		
-		if (privateChat.getPrivateUserOne().equals(privateChatDto.getPrivateUserOne())&& privateChat.getPrivateUserTwo().equals(privateChatDto.getPrivateUserTwo()) ||
-				privateChat.getPrivateUserTwo().equals(privateChatDto.getPrivateUserOne()) && privateChat.getPrivateUserOne().equals(privateChatDto.getPrivateUserTwo())) {
 			
 			privateChatDto.getPrivateChatDetailsDtos().forEach(each->{
 				
@@ -120,10 +118,6 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 			privateChatDetailsDao.save(privateChatDetails);
 			
 			return "Private Chat Send Succsess . . !";
-		}else {
-			
-			return "Un Authorized . . !";
-		}
 		
 		
 	}
@@ -156,8 +150,8 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 		
 		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatId, AppConstant.ACTIVE);
 		
-		privateChat.setStatus(AppConstant.DEACTIVE);
 		if (privateChat != null) {
+			privateChat.setStatus(AppConstant.DEACTIVE);
 			privateChatDao.save(privateChat);
 			return "Chat Succsessfully Deleted . . !";
 		}else {
@@ -183,18 +177,27 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	@Override
 	public List<PrivateChatDto> getAllPrivateChat(String user) throws Exception {
 		
-		List<PrivateChat>privateChats = privateChatDao.findAllByPrivateUserOneOrPrivateUserTwoAndStatus(user, user, AppConstant.ACTIVE);
+		
+		List<PrivateChat>privateChats = privateChatDao.findByPrivateUserOneOrPrivateUserTwoAndStatus(user, user, AppConstant.ACTIVE);
 		ArrayList<PrivateChatDto>privateChatDtos = new ArrayList<>();
 		
 		privateChats.forEach(each->{
-			try {
-				privateChatDtos.add(getPrivateChatList(each));
-			} catch (Exception e) {
-				e.printStackTrace();
+			
+			if (each.getStatus().equals(AppConstant.ACTIVE)) {
+				try {
+					privateChatDtos.add(getPrivateChatList(each));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			}else {
+				System.out.println("dd");
 			}
 			
+			
 		});
-	return privateChatDtos;
+		return privateChatDtos;
+		
 		
 	}
 
@@ -278,9 +281,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 			 * privateChatDetailsDto.setUserName(privateChatDetails.getUserName());
 			 */
 			/* privateChatDetailsDto.setChatDto(chatDto); */
-			
-			
-			
+
 			return null;
 		}
 		

@@ -32,9 +32,11 @@ public interface PrivateChatDao extends CrudRepository<PrivateChat, String>{
 	
 	List<PrivateChat> findAllByPrivateUserTwoAndStatus(String user,String status);
 	
-	List<PrivateChat> findAllByPrivateUserOneOrPrivateUserTwoAndStatus(String userOne,String userTwo,String status);
+	List<PrivateChat> findByPrivateUserOneAndStatus(String userOne,String status);
 	
+	List<PrivateChat> findByPrivateUserTwoAndStatus(String userTwo,String status);
 	
+	List<PrivateChat> findByPrivateUserOneOrPrivateUserTwoAndStatus(String userOne,String userTwo,String status);
 	
 	
 }
