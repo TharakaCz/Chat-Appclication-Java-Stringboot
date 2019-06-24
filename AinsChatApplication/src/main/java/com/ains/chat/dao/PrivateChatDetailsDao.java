@@ -18,4 +18,6 @@ import com.ains.chat.model.PrivateChatDetails;
 public interface PrivateChatDetailsDao extends CrudRepository<PrivateChatDetails, String>{
 
 	List<PrivateChatDetails>findAllByPrivateChatAndStatus(PrivateChat privateChat,String status);
+	
+	PrivateChatDetails findOneByPrivateChatDetailsIdAndStatus(String privateChatDetailsId,String status);
 }

@@ -26,4 +26,6 @@ public interface MembersDao extends CrudRepository<Members, String>{
 	List<Members>findAllByGroupChatAndStatus(GroupChat groupChat,String status);
 	
 	Members findOneByGroupChatAndMemberNameAndStatus(GroupChat groupChat,String memberName,String status);
+	
+	Members findOneByGroupChatAndStatus(GroupChat groupChat,String status);
 }
