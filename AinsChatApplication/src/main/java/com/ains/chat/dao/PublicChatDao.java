@@ -18,5 +18,5 @@ public interface PublicChatDao extends CrudRepository<PublicChat, String>{
 
 	PublicChat findOneByPublicChatId(String publicChatId);
 	
-	List<PublicChat> findAllByStatusOrderByTimeAsc(String status);
+	List<PublicChat> findAllByStatusOrderByDateAsc(String status);
 }

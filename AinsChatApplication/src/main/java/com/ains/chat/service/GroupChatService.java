@@ -7,6 +7,7 @@ package com.ains.chat.service;
 
 import java.util.List;
 
+import com.ains.chat.helper.GroupChatDetailsDto;
 import com.ains.chat.helper.GroupChatDto;
 import com.ains.chat.helper.MembersDto;
 import com.ains.chat.model.Members;
@@ -39,4 +40,6 @@ public interface GroupChatService {
 	public String promoteMember(String memberId)throws Exception;
 	
 	public List<MembersDto>getAllMembers(String groupId)throws Exception; 
+	
+	public List<GroupChatDetailsDto>loardAllGroupChat(String groupId)throws Exception;
 }

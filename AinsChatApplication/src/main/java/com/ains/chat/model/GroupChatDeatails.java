@@ -5,6 +5,8 @@
  */
 package com.ains.chat.model;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +26,7 @@ public class GroupChatDeatails {
 	private String usersNames;
 	private String status;
 	private Chat chat;
+	private Date date;
 	private GroupChat groupChat;
 	
 	public GroupChatDeatails() {
@@ -76,6 +79,15 @@ public class GroupChatDeatails {
 
 	public void setGroupChat(GroupChat groupChat) {
 		this.groupChat = groupChat;
+	}
+
+	@Column(name="DATE",nullable=false)
+	public Date getDate() {
+		return date;
+	}
+
+	public void setDate(Date date) {
+		this.date = date;
 	}
 	
 	

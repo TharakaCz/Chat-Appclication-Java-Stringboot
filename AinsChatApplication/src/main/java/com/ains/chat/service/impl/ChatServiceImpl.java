@@ -39,7 +39,7 @@ public class ChatServiceImpl implements ChatService{
 	@Override
 	public String deleteMassage(String chatId) throws Exception {
 		
-		Chat chat = chatDao.findOneByChatIdAndStatus(chatId,AppConstant.ACTIVE);
+		Chat chat = chatDao.findByChatIdAndStatusOrderByDateAsc(chatId,AppConstant.ACTIVE);
 		chat.setStatus(AppConstant.DEACTIVE);
 		if (chat !=null) {
 			chatDao.save(chat);

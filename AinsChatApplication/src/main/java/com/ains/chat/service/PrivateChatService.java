@@ -7,6 +7,7 @@ package com.ains.chat.service;
 
 import java.util.List;
 
+import com.ains.chat.helper.PrivateChatDetailsDto;
 import com.ains.chat.helper.PrivateChatDto;
 
 /**
@@ -25,4 +26,7 @@ public interface PrivateChatService {
 	public List<PrivateChatDto>getAllPrivateChat(String user)throws Exception;
 
 	public String createPrivateChat(PrivateChatDto privateChatDto)throws Exception;
+	
+	public List<PrivateChatDetailsDto>loardAllPrivateChat(String privateChatId)throws Exception;
+	
 }

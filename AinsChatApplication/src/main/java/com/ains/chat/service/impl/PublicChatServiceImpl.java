@@ -44,8 +44,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 		
 		PublicChat publicChat = new PublicChat();
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse(sdf.format(new Date()));
+		
 		
 		Date time = new Date();
 	    String strDateFormat = "hh:mm:ss a";
@@ -55,7 +54,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 	    Chat chat = new Chat();
 	    chat.setChatId(UUID.randomUUID().toString());
 	    chat.setChatType(AppConstant.PUBLIC_CHAT);
-	    chat.setDate(date);
+	    chat.setDate(new Date());
 	    chat.setMassage(publicChatDto.getChatDto().getMassage());
 	    chat.setStatus(AppConstant.ACTIVE);
 	    chat.setTime(formattedDate);
@@ -64,7 +63,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 		publicChat.setPublicChatId(UUID.randomUUID().toString());
 		publicChat.setStatus(AppConstant.ACTIVE);
 		publicChat.setTime(formattedDate);
-		publicChat.setDate(date);
+		publicChat.setDate(new Date());
 		publicChat.setChat(chatDao.save(chat));
 		
 		publicChatDao.save(publicChat);
@@ -78,21 +77,20 @@ public class PublicChatServiceImpl implements PublicChatService{
 	@Override
 	public String editChat(PublicChatDto publicChatDto) throws Exception {
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse(sdf.format(new Date()));
+		
 		
 		Date time = new Date();
 	    String strDateFormat = "hh:mm:ss a";
 	    DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
 	    String formattedDate= dateFormat.format(time);
 	    
-	    Chat chat = chatDao.findOneByChatIdAndStatus(publicChatDto.getChatDto().getChatId(),AppConstant.ACTIVE);
-	    chat.setDate(date);
+	    Chat chat = chatDao.findByChatIdAndStatusOrderByDateAsc(publicChatDto.getChatDto().getChatId(),AppConstant.ACTIVE);
+	    chat.setDate(new Date());
 	    chat.setTime(formattedDate);
 	    chat.setMassage(publicChatDto.getChatDto().getMassage());
 	  
 	    PublicChat publicChat = publicChatDao.findOneByPublicChatId(publicChatDto.getPublicChatId());
-	    publicChat.setDate(date);
+	    publicChat.setDate(new Date());
 	    publicChat.setTime(formattedDate);
 		publicChat.setChat(chatDao.save(chat));
 		publicChatDao.save(publicChat);
@@ -107,7 +105,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 	public String deleteChat(String publicChatId) throws Exception {
 		
 		PublicChat publicChat = publicChatDao.findOneByPublicChatId(publicChatId);
-		Chat chat = chatDao.findOneByChatIdAndStatus(publicChat.getChat().getChatId(),AppConstant.ACTIVE);
+		Chat chat = chatDao.findByChatIdAndStatusOrderByDateAsc(publicChat.getChat().getChatId(),AppConstant.ACTIVE);
 		
 		chat.setStatus(AppConstant.DEACTIVE);
 		publicChat.setStatus(AppConstant.DEACTIVE);
@@ -129,7 +127,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 	@Override
 	public List<PublicChatDto> getAllPublicChat() throws Exception {
 		
-		List<PublicChat>publicChats = publicChatDao.findAllByStatusOrderByTimeAsc(AppConstant.ACTIVE);
+		List<PublicChat>publicChats = publicChatDao.findAllByStatusOrderByDateAsc(AppConstant.ACTIVE);
 		ArrayList<PublicChatDto>publicChatDtos = new ArrayList<>();
 		
 		publicChats.forEach(each->{
@@ -160,7 +158,7 @@ public class PublicChatServiceImpl implements PublicChatService{
 	private PublicChatDto getPublicChat(PublicChat publicChat)throws Exception{
 		
 		PublicChatDto publicChatDto = new PublicChatDto();
-		Chat chat = chatDao.findOneByChatIdAndStatus(publicChat.getChat().getChatId(),AppConstant.ACTIVE);
+		Chat chat = chatDao.findByChatIdAndStatusOrderByDateAsc(publicChat.getChat().getChatId(),AppConstant.ACTIVE);
 		ChatDto chatDto = new ChatDto();
 		
 		chatDto.setChatId(chat.getChatId());

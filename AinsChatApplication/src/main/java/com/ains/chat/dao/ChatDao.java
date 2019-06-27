@@ -17,7 +17,7 @@ import com.ains.chat.model.Chat;
  */
 public interface ChatDao extends CrudRepository<Chat, String>{
 
-	Chat findOneByChatIdAndStatus(String chatId,String status);
+	Chat findByChatIdAndStatusOrderByDateAsc(String chatId,String status);
 	
 	List<Chat> findAllByStatus(String status);
 	List<Chat> findAllByChatTypeAndStatus(String chatType,String status);
