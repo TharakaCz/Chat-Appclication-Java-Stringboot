@@ -5,6 +5,7 @@
  */
 package com.ains.chat.dao;
 
+
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
@@ -17,7 +18,7 @@ import com.ains.chat.model.PrivateChatDetails;
  */
 public interface PrivateChatDetailsDao extends CrudRepository<PrivateChatDetails, String>{
 
-	List<PrivateChatDetails>findAllByPrivateChatAndStatus(PrivateChat privateChat,String status);
+	List<PrivateChatDetails>findAllByPrivateChatAndStatusOrderByDateAsc(PrivateChat privateChat,String status);
 	
 	PrivateChatDetails findOneByPrivateChatDetailsIdAndStatus(String privateChatDetailsId,String status);
 }

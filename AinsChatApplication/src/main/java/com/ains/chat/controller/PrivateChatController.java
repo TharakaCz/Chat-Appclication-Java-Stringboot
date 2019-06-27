@@ -99,4 +99,14 @@ public class PrivateChatController {
 			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping(value="/loardAllPrivateChat/{privateChatId}")
+	public ResponseEntity<Object>loardAllPrivateChat(@PathVariable("privateChatId")String privateChatId){
+		try {
+			return new ResponseEntity<Object>(privateChatService.loardAllPrivateChat(privateChatId),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

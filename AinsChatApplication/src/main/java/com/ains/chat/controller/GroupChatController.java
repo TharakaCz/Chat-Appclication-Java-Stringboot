@@ -112,4 +112,14 @@ public class GroupChatController {
 			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping(value="/loardAllGroupChat/{groupId}")
+	public ResponseEntity<Object>loardAllGroupChat(@PathVariable("groupId")String groupId){
+		try {
+			return new ResponseEntity<Object>(groupChatService.loardAllGroupChat(groupId),HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

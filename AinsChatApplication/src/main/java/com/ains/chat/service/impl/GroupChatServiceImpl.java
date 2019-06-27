@@ -56,35 +56,41 @@ public class GroupChatServiceImpl implements GroupChatService{
 	@Override
 	public String createGroup(GroupChatDto groupChatDto) throws Exception {
 		
-		GroupChat groupChat = new GroupChat();
-		Members members = new Members();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse(sdf.format(new Date()));
+		if (groupChatDto.getGroupName().isEmpty() && groupChatDto.getCreateBy().isEmpty()) {
+			
+			return "Group Creation Faild . . !";
+			 
+		}else {
+
+			GroupChat groupChat = new GroupChat();
+			Members members = new Members();
+			
+			
+			Date time = new Date();
+		    String strDateFormat = "hh:mm:ss a";
+		    DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+		    String formattedDate= dateFormat.format(time);
+		    
+			groupChat.setGroupId(UUID.randomUUID().toString());
+			groupChat.setGroupName(groupChatDto.getGroupName());
+			groupChat.setStatus(AppConstant.ACTIVE);
+			groupChat.setCreateDate(new Date());
+			groupChat.setCreateTime(formattedDate);
+			groupChat.setCreateBy(groupChatDto.getCreateBy());
+			
+			 groupChatDto.getMembersDtos().forEach(each->{
+			    	members.setMemberId(UUID.randomUUID().toString());
+				    members.setMemberName(groupChatDto.getCreateBy());
+			    	members.setMemberUserDbId(UUID.randomUUID().toString());
+			    	members.setRole(AppConstant.GROUP_SUPER_ADMIN);
+			    	members.setStatus(AppConstant.ACTIVE);
+			    	members.setGroupChat(groupChatDao.save(groupChat));
+			    	membersDao.save(members);
+			    });
+			 
+			 return groupChat.getGroupId();
+		}
 		
-		Date time = new Date();
-	    String strDateFormat = "hh:mm:ss a";
-	    DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
-	    String formattedDate= dateFormat.format(time);
-	    
-		groupChat.setGroupId(UUID.randomUUID().toString());
-		groupChat.setGroupName(groupChatDto.getGroupName());
-		groupChat.setStatus(AppConstant.ACTIVE);
-		groupChat.setCreateDate(date);
-		groupChat.setCreateTime(formattedDate);
-		groupChat.setCreateBy(groupChatDto.getCreateBy());
-		
-		 groupChatDto.getMembersDtos().forEach(each->{
-		    	members.setMemberId(UUID.randomUUID().toString());
-			    members.setMemberName(groupChatDto.getCreateBy());
-		    	members.setMemberUserDbId(UUID.randomUUID().toString());
-		    	members.setRole(AppConstant.GROUP_SUPER_ADMIN);
-		    	members.setStatus(AppConstant.ACTIVE);
-		    	members.setGroupChat(groupChatDao.save(groupChat));
-		    	membersDao.save(members);
-		    });
-	
-		
-		return "Group Creation Succsess . . !";
 	}
 
 	/* (non-Javadoc)
@@ -115,15 +121,22 @@ public class GroupChatServiceImpl implements GroupChatService{
 	@Override
 	public String deleteGroup(String groupId, String memberName) throws Exception {
 		
-		Members members = membersDao.findOneByMemberNameAndStatus(memberName,AppConstant.ACTIVE);
+		List<Members> members = membersDao.findAllByMemberNameAndStatus(memberName,AppConstant.ACTIVE);
 		GroupChat groupChat = groupChatDao.findOneByGroupIdAndStatus(groupId,AppConstant.ACTIVE);
-		groupChat.setStatus(AppConstant.DEACTIVE);
+		ArrayList<String>rolesName = new ArrayList<>(); 
+		members.forEach(each->{
+			rolesName.add(each.getRole());
+		});
 		
-		if (members.getRole().equals(AppConstant.GROUP_SUPER_ADMIN)) {
+		String role = rolesName.get(1);
+		
+		if (role.equals(AppConstant.GROUP_SUPER_ADMIN)) {
+			groupChat.setStatus(AppConstant.DEACTIVE);
 			groupChatDao.save(groupChat);
-			return "Group Deletion Succsess . . !";
+			
+			return "Group Delete Succsess . . !";
 		}else {
-			return "Un Authorized . . !";
+			return "Group Delete Faild Try Again . . !";
 		}
 	}
 
@@ -153,8 +166,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 	@Override
 	public String sendGroupChat(GroupChatDto groupChatDto) throws Exception {
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse(sdf.format(new Date()));
+		
 		
 		Date time = new Date();
 	    String strDateFormat = "hh:mm:ss a";
@@ -169,7 +181,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 			
 			chat.setChatId(UUID.randomUUID().toString());
 			chat.setChatType(AppConstant.GROUP_CHAT);
-			chat.setDate(date);
+			chat.setDate(new Date());
 			chat.setTime(formattedDate);
 			chat.setMassage(each.getChatDto().getMassage());
 			chat.setStatus(AppConstant.ACTIVE);
@@ -180,7 +192,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 			groupChatDeatails.setGroupChat(groupChatDao.save(groupChat));
 			groupChatDeatails.setStatus(AppConstant.ACTIVE);
 			groupChatDeatails.setUsersNames(each.getUsersNames());
-			
+			groupChatDeatails.setDate(new Date());
 			groupChatDetailsDao.save(groupChatDeatails);
 		});
 		
@@ -263,8 +275,6 @@ public class GroupChatServiceImpl implements GroupChatService{
 		GroupChat groupChat = groupChatDao.findOneByGroupIdAndStatus(groupChatDto.getGroupId(), AppConstant.ACTIVE);
 		Members members = membersDao.findOneByGroupChatAndMemberNameAndStatus(groupChat, memberName, AppConstant.ACTIVE);
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse(sdf.format(new Date()));
 		
 		Date time = new Date();
 	    String strDateFormat = "hh:mm:ss a";
@@ -274,7 +284,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 		if (members.getRole().equals(AppConstant.GROUP_ADMIN) || members.getRole().equals(AppConstant.GROUP_SUPER_ADMIN)) {
 			
 			groupChat.setGroupName(groupChatDto.getGroupName());
-			groupChat.setCreateDate(date);
+			groupChat.setCreateDate(new Date());
 			groupChat.setCreateTime(formattedDate);
 			groupChatDao.save(groupChat);
 			
@@ -294,8 +304,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 	@Override
 	public String editChat(GroupChatDto groupChatDto) throws Exception {
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse(sdf.format(new Date()));
+		
 		
 		Date time = new Date();
 	    String strDateFormat = "hh:mm:ss a";
@@ -308,9 +317,9 @@ public class GroupChatServiceImpl implements GroupChatService{
 			GroupChatDeatails groupChatDeatails = groupChatDetailsDao.findOneByGroupDetailsId(each.getGroupDetailsId());
 			Chat chat;
 			try {
-				chat = chatDao.findOneByChatIdAndStatus(each.getChatDto().getChatId(),AppConstant.ACTIVE);
+				chat = chatDao.findByChatIdAndStatusOrderByDateAsc(each.getChatDto().getChatId(),AppConstant.ACTIVE);
 				chat.setChatType(AppConstant.GROUP_CHAT);
-				chat.setDate(date);
+				chat.setDate(new Date());
 				chat.setTime(formattedDate);
 				chat.setMassage(each.getChatDto().getMassage());
 				chat.setStatus(AppConstant.ACTIVE);
@@ -413,7 +422,7 @@ public class GroupChatServiceImpl implements GroupChatService{
 	private GroupChatDetailsDto getDetails(GroupChatDeatails groupChatDeatails)throws Exception{
 		GroupChatDetailsDto groupChatDetailsDto = new GroupChatDetailsDto();
 		ChatDto chatDto = new ChatDto();
-		Chat chat= chatDao.findOneByChatIdAndStatus(groupChatDeatails.getChat().getChatId(),AppConstant.ACTIVE);
+		Chat chat= chatDao.findByChatIdAndStatusOrderByDateAsc(groupChatDeatails.getChat().getChatId(),AppConstant.ACTIVE);
 		
 		
 		chatDto.setChatId(chat.getChatId());
@@ -439,6 +448,28 @@ public class GroupChatServiceImpl implements GroupChatService{
 		membersDto.setRole(members.getRole());
 		
 		return membersDto;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ains.chat.service.GroupChatService#loardAllGroupChat(java.lang.String)
+	 */
+	@Override
+	public List<GroupChatDetailsDto> loardAllGroupChat(String groupId) throws Exception {
+		
+		GroupChat groupChat = groupChatDao.findOneByGroupIdAndStatus(groupId, AppConstant.ACTIVE);
+		
+		List<GroupChatDeatails>groupChatDeatails = groupChatDetailsDao.findAllByGroupChatAndStatusOrderByDateAsc(groupChat,AppConstant.ACTIVE);
+		
+		ArrayList<GroupChatDetailsDto>groupChatDetailsDtos = new ArrayList<>();
+		
+		groupChatDeatails.forEach(each->{
+			try {
+				groupChatDetailsDtos.add(getDetails(each));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		return groupChatDetailsDtos;
 	}
 
 	

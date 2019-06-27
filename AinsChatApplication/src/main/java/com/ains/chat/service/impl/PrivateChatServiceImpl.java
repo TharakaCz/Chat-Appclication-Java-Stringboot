@@ -49,8 +49,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	public String createPrivateChat(PrivateChatDto privateChatDto) throws Exception {
 		
 		/* List<PrivateChat>privateChats = privateChatDao.fin */ /* Create Plez */
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse(sdf.format(new Date()));
+		
 		
 		Date time = new Date();
 	    String strDateFormat = "hh:mm:ss a";
@@ -60,7 +59,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 		PrivateChat privateChat = new PrivateChat();
 		
 		privateChat.setPrivateChatId(UUID.randomUUID().toString());
-		privateChat.setDate(date);
+		privateChat.setDate(new Date());
 		privateChat.setStatus(AppConstant.ACTIVE);
 		privateChat.setTime(formattedDate);
 		privateChat.setPrivateUserOne(privateChatDto.getPrivateUserOne());
@@ -81,8 +80,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 	public String sendPrivateChat(PrivateChatDto privateChatDto) throws Exception {
 		
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		Date date = sdf.parse(sdf.format(new Date()));
+		
 		
 		Date time = new Date();
 	    String strDateFormat = "hh:mm:ss a";
@@ -99,14 +97,14 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 				
 				chat.setChatId(UUID.randomUUID().toString());
 				chat.setChatType(AppConstant.PRIVATE_CHAT);
-				chat.setDate(date);
+				chat.setDate(new Date());
 				chat.setTime(formattedDate);
 				chat.setMassage(each.getChatDto().getMassage());
 				chat.setStatus(AppConstant.ACTIVE);
 				chat.setUserName(privateChatDto.getPrivateUserOne());
 				
 				privateChatDetails.setPrivateChatDetailsId(UUID.randomUUID().toString());
-				privateChatDetails.setDate(date);
+				privateChatDetails.setDate(new Date());
 				privateChatDetails.setTime(formattedDate);
 				privateChatDetails.setStatus(AppConstant.ACTIVE);
 				privateChatDetails.setChat(chat);
@@ -132,7 +130,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 		
 		privateChatDto.getPrivateChatDetailsDtos().forEach(each->{
 			PrivateChatDetails privateChatDetails = privateChatDetailsDao.findOneByPrivateChatDetailsIdAndStatus(each.getPrivateChatDetailsId(), AppConstant.ACTIVE);
-			Chat chat = chatDao.findOneByChatIdAndStatus(each.getChatDto().getChatId(),AppConstant.ACTIVE);
+			Chat chat = chatDao.findByChatIdAndStatusOrderByDateAsc(each.getChatDto().getChatId(),AppConstant.ACTIVE);
 			chat.setMassage(each.getChatDto().getMassage());
 			privateChatDetails.setChat(chat);
 			privateChatDetailsDao.save(privateChatDetails);
@@ -247,7 +245,7 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 		
 		PrivateChatDetailsDto privateChatDetailsDto = new PrivateChatDetailsDto();
 		
-		Chat chat = chatDao.findOneByChatIdAndStatus(privateChatDetails.getChat().getChatId(),AppConstant.ACTIVE);
+		Chat chat = chatDao.findByChatIdAndStatusOrderByDateAsc(privateChatDetails.getChat().getChatId(),AppConstant.ACTIVE);
 		ChatDto chatDto = new ChatDto();
 		
 		if (chat != null) {
@@ -286,6 +284,27 @@ public class PrivateChatServiceImpl implements PrivateChatService{
 		}
 		
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see com.ains.chat.service.PrivateChatService#loardAllPrivateChat(java.lang.String)
+	 */
+	@Override
+	public List<PrivateChatDetailsDto> loardAllPrivateChat(String privateChatId) throws Exception {
+		
+		PrivateChat privateChat = privateChatDao.findOneByPrivateChatIdAndStatus(privateChatId, AppConstant.ACTIVE);
+		
+		List<PrivateChatDetails>privateChatDetails = privateChatDetailsDao.findAllByPrivateChatAndStatusOrderByDateAsc(privateChat, AppConstant.ACTIVE);
+		ArrayList<PrivateChatDetailsDto>privateChatDetailsDtos = new ArrayList<>();
+		
+		privateChatDetails.forEach(each->{
+			try {
+				privateChatDetailsDtos.add(getPrivateChatDetails(each));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
+		return privateChatDetailsDtos;
 	}
 }
 
